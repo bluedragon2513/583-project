@@ -1,0 +1,18 @@
+﻿Related Files:
+* project.pdf - project description and requirements
+* questions.txt - topic, question, and answer (may have two) separated by newline
+* README.txt - additional context from the project
+* wiki-data.txt - link to larger data folder, should be found in wiki-subset-20140602
+* wiki-example.txt - wikipedia data extracted example
+* CSC583_default_project_2 - ignore
+
+
+Things to put in .gitignore:
+* wiki-subset-20140602 folder
+
+
+Current Instructions:
+* Follow project.pdf for the coding instructions.
+* Use Python Lucene, not Java.
+* Do not do the “Improved Implementation” as of yet.
+* Once the code is done writing, we will loop over fixing the code and any errors that might appear.

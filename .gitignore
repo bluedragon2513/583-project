@@ -1,2 +1,6 @@
 venv/*
 wiki-subset-20140602/*
+wiki_index/
+__pycache__/
+*.pyc
+*.pyo

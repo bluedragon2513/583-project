@@ -20,7 +20,7 @@ from org.apache.lucene.store import FSDirectory
 from org.apache.lucene.index import DirectoryReader
 from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause, BoostQuery
 from org.apache.lucene.analysis.en import EnglishAnalyzer
-from org.apache.lucene.queryparser.classic import QueryParser, MultiFieldQueryParser
+from org.apache.lucene.queryparser.classic import QueryParser
 
 INDEX_DIR = "wiki_index"
 QUESTIONS_FILE = os.path.join("project description folder", "questions.txt")
@@ -80,36 +80,42 @@ def answer_matches(predicted_title, gold_answers):
     return False
 
 
+def lucene_escape(text):
+    """Escape special Lucene query characters from a Python string."""
+    special = r'\+-!(){}[]^"~*?:|&/'
+    return ''.join('\\' + c if c in special else c for c in text)
+
+
 def build_query(analyzer, category, clue, boost_category=0.3):
-    """Build a BooleanQuery combining clue text and category boost."""
-    fields = ["content", "title_text"]
-    weights = {f: 1.0 for f in fields}
+    """Build a BooleanQuery combining clue text (content + title) with category boost.
 
-    # Primary query: clue text searched across content and title
-    parser = MultiFieldQueryParser(fields, analyzer)
-    parser.setDefaultOperator(QueryParser.Operator.OR)
+    Uses one QueryParser per field and combines them with SHOULD clauses so
+    documents matching any field contribute to the score.
+    """
+    escaped_clue = lucene_escape(clue)
+    builder = BooleanQuery.Builder()
 
-    # Escape special Lucene chars in user text
-    escaped_clue = QueryParser.escape(clue)
-    try:
-        clue_query = parser.parse(escaped_clue)
-    except Exception:
-        clue_query = None
+    any_clause = False
+    for field in ("content", "title_text"):
+        try:
+            parser = QueryParser(field, analyzer)
+            parser.setDefaultOperator(QueryParser.Operator.OR)
+            q = parser.parse(escaped_clue)
+            builder.add(q, BooleanClause.Occur.SHOULD)
+            any_clause = True
+        except Exception:
+            pass
 
-    if not clue_query:
+    if not any_clause:
         return None
 
-    builder = BooleanQuery.Builder()
-    builder.add(clue_query, BooleanClause.Occur.SHOULD)
-
-    # Category boost: add category words as an optional soft signal
+    # Category boost: soft optional signal
     if category and boost_category > 0:
-        escaped_cat = QueryParser.escape(category)
-        cat_parser = QueryParser("content", analyzer)
+        escaped_cat = lucene_escape(category)
         try:
-            cat_query = cat_parser.parse(escaped_cat)
-            boosted = BoostQuery(cat_query, boost_category)
-            builder.add(boosted, BooleanClause.Occur.SHOULD)
+            cat_parser = QueryParser("content", analyzer)
+            cat_q = cat_parser.parse(escaped_cat)
+            builder.add(BoostQuery(cat_q, boost_category), BooleanClause.Occur.SHOULD)
         except Exception:
             pass
 
@@ -135,8 +141,9 @@ def search(questions, top_k=TOP_K):
 
         hits = searcher.search(query, top_k)
         ranked_titles = []
+        stored = searcher.storedFields()
         for hit in hits.scoreDocs:
-            doc = searcher.doc(hit.doc)
+            doc = stored.document(hit.doc)
             title = doc.get("title")
             ranked_titles.append(title)
 

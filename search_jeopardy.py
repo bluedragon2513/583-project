@@ -86,16 +86,86 @@ def lucene_escape(text):
     return ''.join('\\' + c if c in special else c for c in text)
 
 
-def build_query(analyzer, category, clue, boost_category=0.3):
-    """Build a BooleanQuery combining clue text (content + title) with category boost.
+# Words that appear constantly in Jeopardy clues but carry no retrieval signal.
+# EnglishAnalyzer already removes standard stop words (a, the, is, …); these
+# are Jeopardy-specific filler words that survive the standard list.
+JEOPARDY_STOP_WORDS = {
+    'this', 'these', 'his', 'her', 'their', 'its', 'our', 'your',
+    'he', 'she', 'they', 'it', 'we', 'you', 'who', 'whom', 'whose',
+    'said', 'called', 'known', 'named', 'aka', 'also', 'just',
+    'one', 'two', 'first', 'second', 'last', 'new', 'old',
+    'man', 'woman', 'person', 'people', 'type', 'kind', 'form',
+}
 
-    Uses one QueryParser per field and combines them with SHOULD clauses so
-    documents matching any field contribute to the score.
+
+def remove_jeopardy_stops(text):
+    """Strip Jeopardy filler words, keeping meaningful content words."""
+    tokens = text.split()
+    filtered = [t for t in tokens if t.lower() not in JEOPARDY_STOP_WORDS]
+    return ' '.join(filtered) if filtered else text
+
+
+def extract_named_entities(clue):
+    """Return multi-word proper noun phrases from the clue.
+
+    Only consecutive sequences of 2+ capitalised tokens are returned.
+    Single capitalised words (Olympics, Nile, UCLA) appear as supporting
+    context in Jeopardy clues, not as the answer — boosting them against
+    titles pulls up the wrong pages. Two-word+ sequences (El Tahrir,
+    Pierre Cauchon, Wolong Nature Reserve) are specific enough to be
+    useful anchors even if they are not the answer themselves.
     """
-    escaped_clue = lucene_escape(clue)
-    builder = BooleanQuery.Builder()
+    tokens = clue.split()
+    entities = []
+    run = []
+    for i, tok in enumerate(tokens):
+        core = tok.lstrip('"\'(').rstrip('",)')
+        if not core:
+            run = []
+            continue
+        is_cap = core[0].isupper() and not core.isupper()  # skip ALL-CAPS
+        if is_cap and i > 0 and core.lower() not in JEOPARDY_STOP_WORDS:
+            run.append(core)
+        else:
+            if len(run) >= 2:
+                entities.append(' '.join(run))
+            run = []
+    if len(run) >= 2:
+        entities.append(' '.join(run))
+    return entities
 
+
+def build_query(analyzer, category, clue):
+    """Build a BooleanQuery from the clue and category.
+
+    Improvement 1 — Category-aware query construction:
+      Category words are searched against both 'content' (boost 0.5) and
+      'title_text' (boost 0.8).
+
+    Improvement 2 — Jeopardy stop word removal:
+      Filler words common in Jeopardy phrasing are stripped before querying.
+
+    Improvement 3 — Lead paragraph boosting:
+      The clue query is also run against the 'lead' field (boost 1.5).
+      Wikipedia lead paragraphs define the article subject with the same
+      descriptive language Jeopardy clues use, making them the highest-signal
+      section for retrieval.
+
+    Improvement 4 — Named entity upweighting (multi-word only):
+      Consecutive sequences of 2+ capitalised tokens are extracted from the
+      clue and searched against 'title_text' (boost 2.0). Single capitalised
+      words are skipped because they are supporting context in Jeopardy clues,
+      not the answer — only specific multi-word phrases like "El Tahrir" or
+      "Pierre Cauchon" point usefully toward an article.
+    """
+    # --- Improvement 2: remove Jeopardy filler from the clue ---
+    clean_clue = remove_jeopardy_stops(clue)
+    escaped_clue = lucene_escape(clean_clue)
+
+    builder = BooleanQuery.Builder()
     any_clause = False
+
+    # Primary signal: clue text against content and title
     for field in ("content", "title_text"):
         try:
             parser = QueryParser(field, analyzer)
@@ -109,13 +179,51 @@ def build_query(analyzer, category, clue, boost_category=0.3):
     if not any_clause:
         return None
 
-    # Category boost: soft optional signal
-    if category and boost_category > 0:
-        escaped_cat = lucene_escape(category)
+    # --- Improvement 3: lead paragraph boosting ---
+    try:
+        lead_parser = QueryParser("lead", analyzer)
+        lead_parser.setDefaultOperator(QueryParser.Operator.OR)
+        lead_q = lead_parser.parse(escaped_clue)
+        builder.add(BoostQuery(lead_q, 1.5), BooleanClause.Occur.SHOULD)
+    except Exception:
+        pass
+
+    # --- Improvement 4: multi-word named entity upweighting ---
+    named_entities = extract_named_entities(clue)
+    for phrase in named_entities:
+        escaped_phrase = lucene_escape(phrase)
         try:
-            cat_parser = QueryParser("content", analyzer)
-            cat_q = cat_parser.parse(escaped_cat)
-            builder.add(BoostQuery(cat_q, boost_category), BooleanClause.Occur.SHOULD)
+            ne_parser = QueryParser("title_text", analyzer)
+            ne_parser.setDefaultOperator(QueryParser.Operator.AND)
+            ne_q = ne_parser.parse(escaped_phrase)
+            builder.add(BoostQuery(ne_q, 2.0), BooleanClause.Occur.SHOULD)
+        except Exception:
+            pass
+
+    # --- Improvement 1: category-aware boosting ---
+    if category:
+        escaped_cat = lucene_escape(category)
+        # Category against body content (moderate boost)
+        try:
+            cat_content_parser = QueryParser("content", analyzer)
+            cat_q = cat_content_parser.parse(escaped_cat)
+            builder.add(BoostQuery(cat_q, 0.5), BooleanClause.Occur.SHOULD)
+        except Exception:
+            pass
+        # Category against document title (stronger boost — answer type often
+        # appears in the page title)
+        try:
+            cat_title_parser = QueryParser("title_text", analyzer)
+            cat_tq = cat_title_parser.parse(escaped_cat)
+            builder.add(BoostQuery(cat_tq, 0.8), BooleanClause.Occur.SHOULD)
+        except Exception:
+            pass
+        # Category against Wikipedia article categories (strong signal —
+        # "NEWSPAPERS" matches articles categorised as newspapers, etc.)
+        try:
+            cat_cats_parser = QueryParser("categories", analyzer)
+            cat_cats_q = cat_cats_parser.parse(escaped_cat)
+            builder.add(BoostQuery(cat_cats_q, 2.0), BooleanClause.Occur.SHOULD)
         except Exception:
             pass
 

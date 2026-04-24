@@ -19,6 +19,7 @@ from java.nio.file import Paths
 from org.apache.lucene.store import FSDirectory
 from org.apache.lucene.index import DirectoryReader
 from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause, BoostQuery
+from org.apache.lucene.search.similarities import BM25Similarity
 from org.apache.lucene.analysis.en import EnglishAnalyzer
 from org.apache.lucene.queryparser.classic import QueryParser
 
@@ -230,13 +231,13 @@ def build_query(analyzer, category, clue):
     return builder.build()
 
 
-def search(questions, top_k=TOP_K):
-    lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-
+def search(questions, top_k=TOP_K, k1=1.2, b=0.75):
+    """Run retrieval with BM25(k1, b). Lucene's defaults are k1=1.2, b=0.75."""
     index_path = Paths.get(INDEX_DIR)
     directory = FSDirectory.open(index_path)
     reader = DirectoryReader.open(directory)
     searcher = IndexSearcher(reader)
+    searcher.setSimilarity(BM25Similarity(k1, b))
     analyzer = EnglishAnalyzer()
 
     results = []  # list of (category, clue, answers, ranked_titles)
@@ -295,6 +296,8 @@ def main():
 
     questions = load_questions(QUESTIONS_FILE)
     print(f"Loaded {len(questions)} questions.")
+
+    lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
     results = search(questions)
 

@@ -228,28 +228,6 @@ def build_query(analyzer, category, clue):
         except Exception:
             pass
 
-    # --- Special case: NAME THE PARENT COMPANY ---
-    # The clue is a product/brand name. BM25 naturally retrieves the product
-    # article, which has the highest term overlap. We add "parent company
-    # corporation subsidiary" to the content search and boost the Wikipedia
-    # article-categories field with "company corporation" so that corporate
-    # articles outrank product articles in the candidate list.
-    if "parent company" in category.lower():
-        augmented = lucene_escape(clean_clue + " parent company corporation subsidiary")
-        try:
-            pc_parser = QueryParser("content", analyzer)
-            pc_parser.setDefaultOperator(QueryParser.Operator.OR)
-            pc_q = pc_parser.parse(augmented)
-            builder.add(BoostQuery(pc_q, 2.0), BooleanClause.Occur.SHOULD)
-        except Exception:
-            pass
-        try:
-            corp_cats_parser = QueryParser("categories", analyzer)
-            corp_cats_q = corp_cats_parser.parse("company corporation")
-            builder.add(BoostQuery(corp_cats_q, 3.0), BooleanClause.Occur.SHOULD)
-        except Exception:
-            pass
-
     return builder.build()
 
 

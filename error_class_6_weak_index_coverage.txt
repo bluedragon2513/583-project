@@ -1,0 +1,58 @@
+ERROR CLASS 6: Answer Weakly Represented in Index / Insufficient Clue Vocabulary
+==================================================================================
+
+EXPLANATION:
+A small set of questions fail not because the wrong entity type is retrieved, but
+because the clue contains too little retrievable vocabulary, or the correct answer
+article doesn't exist prominently enough in the Wikipedia subset being indexed. The
+clue words match unrelated articles with equal or higher BM25 scores, leaving the
+system with no good signal to work from. Fixes here require either a larger/more
+current Wikipedia index or external knowledge sources (e.g., song databases for
+'80s music, structured cultural references for niche topics).
+
+QUESTIONS IN THIS CLASS (4):
+
+Q4
+  Category : BROADWAY LYRICS
+  Clue     : Song that says, "you make me smile with my heart; your looks are
+             laughable, unphotographable"
+  Gold     : My Funny Valentine
+  Predicted: Yao Shouzhong
+  Note     : The lyric text has almost no overlap with any Wikipedia article title.
+             "My Funny Valentine" is a song; its Wikipedia article may not rank
+             highly from these lyric fragments. Yao Shouzhong is a completely
+             spurious match — a sign that BM25 found no meaningful signal and
+             returned noise.
+
+Q90
+  Category : CAMBODIAN HISTORY & CULTURE
+  Clue     : Not to be confused with karma, krama is a popular accessory sold in
+             Cambodia; the word means "scarf" in this national language of Cambodia
+  Gold     : Khmer language
+  Predicted: Vietnam War
+  Note     : "Cambodia" and "national language" should recover Khmer language, but
+             BM25 apparently scores "Cambodia" + "war" (from surrounding context)
+             higher. The index may have weak coverage of Khmer language specifically.
+
+Q91
+  Category : CAMBODIAN HISTORY & CULTURE
+  Clue     : Phnom Penh's notorious gridlock is circumvented by the nimble tuk-tuk,
+             a motorized taxi that's also known as an auto this, a similar Asian
+             conveyance.
+  Gold     : Rickshaw
+  Predicted: Na Tuk Kong
+  Note     : "Tuk-tuk" and "auto" and "Asian conveyance" are the main terms.
+             "Rickshaw" is the correct answer but likely has weak co-occurrence
+             with "tuk-tuk" in the indexed Wikipedia subset. Na Tuk Kong (a Thai
+             spirit) is a spurious match from "Na Tuk".
+
+Q18 (borderline Class 5 / Class 6)
+  Category : AFRICAN-AMERICAN WOMEN
+  Clue     : In an essay defending this 2011 film, Myrlie Evers-Williams said,
+             "My mother was" this film "& so was her mother"
+  Gold     : The Help
+  Predicted: William S. Burroughs
+  Note     : The clue gives almost no retrievable signal — the film title is withheld
+             (it's the answer), and "Myrlie Evers-Williams" is a relatively rare
+             named entity. BM25 falls back on noise (William S. Burroughs has no
+             connection to this question whatsoever).

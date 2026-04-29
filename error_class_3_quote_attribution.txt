@@ -1,0 +1,41 @@
+ERROR CLASS 3: Quote Attribution — Event Retrieved Instead of Speaker
+======================================================================
+
+EXPLANATION:
+All three HISTORICAL QUOTES questions are wrong. Each clue describes the historical
+context in which a famous quote was delivered. BM25 matches the rich contextual terms
+(the event, the period, the audience) and retrieves the article about the historical
+event or setting, not the person who actually said the words. The speaker's Wikipedia
+article is relevant but scores lower because it competes with many other topics in its
+content. A targeted fix would be to prompt the LLM explicitly to identify the *person*
+who said the quote, or to apply an entity-type filter that prefers biographic articles
+over event/period articles when the category is HISTORICAL QUOTES.
+
+QUESTIONS IN THIS CLASS (3):
+
+Q11
+  Category : HISTORICAL QUOTES
+  Clue     : After the fall of France in 1940, this general told his country,
+             "France has lost a battle. But France has not lost the war"
+  Gold     : Charles de Gaulle
+  Predicted: History of France
+  Note     : "Fall of France 1940" heavily matches the France-history article. De Gaulle's
+             article is relevant but loses to the event article in BM25 scoring.
+
+Q50
+  Category : HISTORICAL QUOTES
+  Clue     : In a 1959 American kitchen exhibit in Moscow, he told Khrushchev,
+             "In America, we like to make life easier for women"
+  Gold     : Richard Nixon
+  Predicted: Cuban missile crisis
+  Note     : "Moscow" and "Khrushchev" match Cold War event articles. The Kitchen Debate
+             is discussed in Nixon's article, but BM25 finds the crisis article first.
+
+Q88
+  Category : HISTORICAL QUOTES
+  Clue     : In 1888 this Chancellor told the Reichstag,
+             "we Germans fear God, but nothing else in the world"
+  Gold     : Otto von Bismarck
+  Predicted: Wilhelm II, German Emperor
+  Note     : "Reichstag" and "1888" match multiple German political articles. Wilhelm II
+             is also associated with the Reichstag in that era, causing the wrong pick.

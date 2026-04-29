@@ -228,6 +228,28 @@ def build_query(analyzer, category, clue):
         except Exception:
             pass
 
+    # --- Special case: NAME THE PARENT COMPANY ---
+    # The clue is a product/brand name. BM25 naturally retrieves the product
+    # article, which has the highest term overlap. We add "parent company
+    # corporation subsidiary" to the content search and boost the Wikipedia
+    # article-categories field with "company corporation" so that corporate
+    # articles outrank product articles in the candidate list.
+    if "parent company" in category.lower():
+        augmented = lucene_escape(clean_clue + " parent company corporation subsidiary")
+        try:
+            pc_parser = QueryParser("content", analyzer)
+            pc_parser.setDefaultOperator(QueryParser.Operator.OR)
+            pc_q = pc_parser.parse(augmented)
+            builder.add(BoostQuery(pc_q, 2.0), BooleanClause.Occur.SHOULD)
+        except Exception:
+            pass
+        try:
+            corp_cats_parser = QueryParser("categories", analyzer)
+            corp_cats_q = corp_cats_parser.parse("company corporation")
+            builder.add(BoostQuery(corp_cats_q, 3.0), BooleanClause.Occur.SHOULD)
+        except Exception:
+            pass
+
     return builder.build()
 
 
@@ -260,6 +282,65 @@ def search(questions, top_k=TOP_K, k1=1.2, b=0.0):
 
     reader.close()
     return results
+
+
+def extract_category_constraint(category):
+    """Extract an answer-type constraint from the category string.
+
+    Handles two cases:
+      1. Parenthetical Alex note: '(Alex: We'll give you the museum. You give us the state.)'
+      2. Known implicit patterns that carry a hard answer-type rule without a note.
+    """
+    match = re.search(r'\(Alex[:\s]+(.+?)\)', category, re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    if "parent company" in category.lower():
+        return (
+            "The answer must be the parent corporation that owns the brand or product, "
+            "NOT the brand or product itself. Pick the candidate that is a company."
+        )
+    return None
+
+
+def rerank_with_llm(results, model="gemini-2.0-flash"):
+    """Rerank each question's candidate titles using an LLM and return updated results."""
+    from google import genai
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    reranked = []
+
+    for i, (category, clue, answers, titles) in enumerate(results):
+        if not titles:
+            reranked.append((category, clue, answers, titles))
+            continue
+
+        numbered = "\n".join(f"{j+1}. {t}" for j, t in enumerate(titles))
+        constraint = extract_category_constraint(category)
+        constraint_line = f"IMPORTANT — {constraint}\n\n" if constraint else ""
+        prompt = (
+            f"You are solving a Jeopardy! clue. Pick the Wikipedia article title "
+            f"that is the correct answer.\n\n"
+            f"Category: {category}\n"
+            f"Clue: {clue}\n\n"
+            f"{constraint_line}"
+            f"Candidates:\n{numbered}\n\n"
+            f"Reply with only the number of the correct title."
+        )
+
+        try:
+            response = client.models.generate_content(model=model, contents=prompt)
+            raw = response.text.strip()
+            idx = int(''.join(c for c in raw if c.isdigit())) - 1
+            if 0 <= idx < len(titles):
+                reordered = [titles[idx]] + [t for j, t in enumerate(titles) if j != idx]
+            else:
+                reordered = titles
+        except Exception:
+            reordered = titles
+
+        reranked.append((category, clue, answers, reordered))
+        print(f"  [{i+1:3}/100] {category[:25]:<25} → {reordered[0][:45]}", flush=True)
+
+    return reranked
 
 
 def compute_metrics(results):
@@ -300,6 +381,12 @@ def main():
     lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
     results = search(questions)
+
+    if os.environ.get("GEMINI_API_KEY"):
+        print("\nReranking with LLM...")
+        results = rerank_with_llm(results)
+    else:
+        print("\nNo GEMINI_API_KEY set; skipping LLM reranking.")
 
     print("\n=== Per-Question Results ===")
     for i, (category, clue, answers, ranked_titles) in enumerate(results, 1):

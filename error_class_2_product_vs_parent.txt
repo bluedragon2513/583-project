@@ -1,0 +1,46 @@
+ERROR CLASS 2: Product / Brand Retrieved Instead of Parent Company
+==================================================================
+
+EXPLANATION:
+Every NAME THE PARENT COMPANY question except one (Fisher-Price → Mattel) is wrong.
+The clue is simply the name of a product or brand. BM25 retrieves the Wikipedia article
+about the product itself — which is prominent and has strong vocabulary overlap with the
+query — rather than the corporate parent's article. The parent company article mentions
+the product name less frequently and scores lower as a result. A targeted fix would be
+to detect this category and reformulate the query to search for "subsidiary of" or
+"owned by" relationships, or to post-filter candidates by whether they describe a
+company rather than a product.
+
+QUESTIONS IN THIS CLASS (4):
+
+Q33
+  Category : NAME THE PARENT COMPANY
+  Clue     : Jell-O
+  Gold     : Kraft Foods
+  Predicted: Jell-O
+  Note     : BM25 returns the Jell-O article directly. Kraft Foods scores lower
+             because "Jell-O" is one of many brands mentioned there.
+
+Q42
+  Category : NAME THE PARENT COMPANY
+  Clue     : Milton Bradley games
+  Gold     : Hasbro
+  Predicted: Axis & Allies
+  Note     : "Milton Bradley" matches board game articles (Axis & Allies is a MB game).
+             Hasbro, the parent, is not retrieved.
+
+Q87
+  Category : NAME THE PARENT COMPANY
+  Clue     : Crest toothpaste
+  Gold     : Procter & Gamble
+  Predicted: Crest (toothpaste)
+  Note     : The product article itself scores highest. P&G is a massive conglomerate
+             whose article doesn't rank highly for the single query term "Crest".
+
+Q99
+  Category : NAME THE PARENT COMPANY
+  Clue     : Post-it notes
+  Gold     : 3M
+  Predicted: Post City Magazines
+  Note     : BM25 matches "Post" in the query to "Post City Magazines". The 3M article
+             mentions Post-it but is outweighed by the false "Post" match.

@@ -231,8 +231,8 @@ def build_query(analyzer, category, clue):
     return builder.build()
 
 
-def search(questions, top_k=TOP_K, k1=1.2, b=0.75):
-    """Run retrieval with BM25(k1, b). Lucene's defaults are k1=1.2, b=0.75."""
+def search(questions, top_k=TOP_K, k1=1.2, b=0.0):
+    """Run retrieval with BM25(k1, b). b=0.0 disables length normalization (best empirically)."""
     index_path = Paths.get(INDEX_DIR)
     directory = FSDirectory.open(index_path)
     reader = DirectoryReader.open(directory)

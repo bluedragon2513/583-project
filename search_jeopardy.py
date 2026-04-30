@@ -106,34 +106,34 @@ def remove_jeopardy_stops(text):
     return ' '.join(filtered) if filtered else text
 
 
-def extract_named_entities(clue):
-    """Return multi-word proper noun phrases from the clue.
+# def extract_named_entities(clue):
+#     """Return multi-word proper noun phrases from the clue.
 
-    Only consecutive sequences of 2+ capitalised tokens are returned.
-    Single capitalised words (Olympics, Nile, UCLA) appear as supporting
-    context in Jeopardy clues, not as the answer — boosting them against
-    titles pulls up the wrong pages. Two-word+ sequences (El Tahrir,
-    Pierre Cauchon, Wolong Nature Reserve) are specific enough to be
-    useful anchors even if they are not the answer themselves.
-    """
-    tokens = clue.split()
-    entities = []
-    run = []
-    for i, tok in enumerate(tokens):
-        core = tok.lstrip('"\'(').rstrip('",)')
-        if not core:
-            run = []
-            continue
-        is_cap = core[0].isupper() and not core.isupper()  # skip ALL-CAPS
-        if is_cap and i > 0 and core.lower() not in JEOPARDY_STOP_WORDS:
-            run.append(core)
-        else:
-            if len(run) >= 2:
-                entities.append(' '.join(run))
-            run = []
-    if len(run) >= 2:
-        entities.append(' '.join(run))
-    return entities
+#     Only consecutive sequences of 2+ capitalised tokens are returned.
+#     Single capitalised words (Olympics, Nile, UCLA) appear as supporting
+#     context in Jeopardy clues, not as the answer — boosting them against
+#     titles pulls up the wrong pages. Two-word+ sequences (El Tahrir,
+#     Pierre Cauchon, Wolong Nature Reserve) are specific enough to be
+#     useful anchors even if they are not the answer themselves.
+#     """
+#     tokens = clue.split()
+#     entities = []
+#     run = []
+#     for i, tok in enumerate(tokens):
+#         core = tok.lstrip('"\'(').rstrip('",)')
+#         if not core:
+#             run = []
+#             continue
+#         is_cap = core[0].isupper() and not core.isupper()  # skip ALL-CAPS
+#         if is_cap and i > 0 and core.lower() not in JEOPARDY_STOP_WORDS:
+#             run.append(core)
+#         else:
+#             if len(run) >= 2:
+#                 entities.append(' '.join(run))
+#             run = []
+#     if len(run) >= 2:
+#         entities.append(' '.join(run))
+#     return entities
 
 
 def build_query(analyzer, category, clue):
@@ -190,16 +190,16 @@ def build_query(analyzer, category, clue):
         pass
 
     # --- Improvement 4: multi-word named entity upweighting ---
-    named_entities = extract_named_entities(clue)
-    for phrase in named_entities:
-        escaped_phrase = lucene_escape(phrase)
-        try:
-            ne_parser = QueryParser("title_text", analyzer)
-            ne_parser.setDefaultOperator(QueryParser.Operator.AND)
-            ne_q = ne_parser.parse(escaped_phrase)
-            builder.add(BoostQuery(ne_q, 2.0), BooleanClause.Occur.SHOULD)
-        except Exception:
-            pass
+    # named_entities = extract_named_entities(clue)
+    # for phrase in named_entities:
+    #     escaped_phrase = lucene_escape(phrase)
+    #     try:
+    #         ne_parser = QueryParser("title_text", analyzer)
+    #         ne_parser.setDefaultOperator(QueryParser.Operator.AND)
+    #         ne_q = ne_parser.parse(escaped_phrase)
+    #         builder.add(BoostQuery(ne_q, 2.0), BooleanClause.Occur.SHOULD)
+    #     except Exception:
+    #         pass
 
     # --- Improvement 1: category-aware boosting ---
     if category:

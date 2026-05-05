@@ -4,7 +4,7 @@
 
 The following are explanations of the documents in this project repository.
 
-1. **`prompting_document.txt`** —- describes the related files (in the `project description folder` directory) and instructions given to the LLM that we used (Claude Sonnet 4.6) to vibe code our project.
+1. **`prompting_document.txt`** —- describes the related files (in the `project_description_folder` directory) and instructions given to the LLM that we used (Claude Sonnet 4.6) to vibe code our project.
 
 2. **`project_experiments.pdf`** -- all of our notes/results before, during, and after each iteration of our implementations.
 

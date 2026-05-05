@@ -5,4 +5,10 @@ The following are explanations of the documents in this project repository.
 2. project_experiments.pdf -- all of our notes/results before, during, and after each iteration of our implementations.
 3. project_report.pdf -- a detailed walkthrough of our project implementation.
 4. The following error class files describe specific class errors with a detailed analsysis of why that is the case so that we could improve our base implementation:
-       error_class_1_meta_category
+              error_class_1_meta_category_mismatch.txt
+              error_class_2_product_vs_parent.txt
+              error_class_3_quote_attribution.txt
+              error_class_4_wordplay_indirect.txt
+              error_class_5_wrong_specific_entity.txt
+5. 
+       

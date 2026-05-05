@@ -19,8 +19,8 @@ The following are explanations of the documents in this project repository.
 
 5. **`index_wiki.py`** -- the code that indexes the Wikipedia pages using PyLucene.
 
-6. **`lemmatize.py`** -- NLTK lemmatization code used at both index and query time.
+6. **`lemmatize.py`** -- the NLTK lemmatization code used at both index and query time.
 
 7. **`search_jeopardy.py`** -- the code that retrieves Wikipedia page titles for Jeopardy clues.
 
-8. **`run.sh`** --
+8. **`run.sh`** -- the script that runs `index_wiki.py` and `search_jeopardy.py` (i.e. the whole project).

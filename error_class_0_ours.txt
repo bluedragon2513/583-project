@@ -1,0 +1,94 @@
+Wordplay/Indirect Mapping/Step of Knowledge
+  7. [✗] "TIN" MEN                      | Clue: This Italian painter depicted the "Adoration of th | Predicted: Golden Eagle                                       | Gold: tintoretto
+ 38. [✗] "TIN" MEN                      | Clue: He served in the KGB before becoming president & t | Predicted: Politics of Russia                                 | Gold: vladimir putin
+ 60. [✗] "TIN" MEN                      | Clue: He earned the "fifth Beatle" nickname by producing | Predicted: Fifth Beatle                                       | Gold: george martin
+ 68. [✗] "TIN" MEN                      | Clue: You can't mention this shortstop without mentionin | Predicted: Jean Chrétien                                      | Gold: joe tinker
+ 74. [✗] COMPLETE DOM-INATION(Alex: Not | Clue: This New Orleans venue reopened Sept. 25, 2006     | Predicted: Louis Armstrong New Orleans International Airport  | Gold: mercedes-benz superdome
+ 78. [✗] COMPLETE DOM-INATION(Alex: Not | Clue: This sacred structure dates from the late 600's A. | Predicted: Roman Empire                                       | Gold: dome of the rock
+ 88. [✗] HISTORICAL QUOTES              | Clue: In 1888 this Chancellor told the Reichstag, "we Ge | Predicted: Wilhelm II, German Emperor                         | Gold: otto von bismarck
+
+
+Categorical Mismatch
+  1. [✗] NEWSPAPERS                     | Clue: The dominant paper in our nation's capital, it's a | Predicted: Warren G. Harding                                  | Gold: the washington post
+  6. [✗] STATE OF THE ART MUSEUM (Alex: | Clue: The Naples Museum of Art                           | Predicted: Metropolitan Museum of Art                         | Gold: florida
+ 11. [✗] HISTORICAL QUOTES              | Clue: After the fall of France in 1940, this general tol | Predicted: History of France                                  | Gold: charles de gaulle
+ 12. [✗] STATE OF THE ART MUSEUM (Alex: | Clue: The Taft Museum of Art                             | Predicted: William Howard Taft                                | Gold: ohio
+ 15. [✗] HISTORICAL HODGEPODGE          | Clue: It was the peninsula fought over in the peninsular | Predicted: Napoleonic Wars                                    | Gold: iberia
+ 31. [✗] STATE OF THE ART MUSEUM (Alex: | Clue: The Georgia O'Keeffe Museum                        | Predicted: Alfred Stieglitz                                   | Gold: new mexico
+ 41. [✗] CAPITAL CITY CHURCHES (Alex: W | Clue: In this Finnish city, the Lutheran Cathedral, also | Predicted: Finnish Orthodox Church                            | Gold: helsinki
+ 47. [✗] CAPITAL CITY CHURCHES (Alex: W | Clue: The High Kirk of St. Giles, where John Knox was mi | Predicted: John Knox                                          | Gold: edinburgh
+ 54. [✗] AFRICAN CITIES                 | Clue: This port is the southernmost of South Africa's 3  | Predicted: History of Africa                                  | Gold: cape town
+ 66. [✗] STATE OF THE ART MUSEUM (Alex: | Clue: The Kalamazoo Institute of Arts                    | Predicted: Kalamazoo/Battle Creek International Airport       | Gold: michigan
+ 67. [✗] STATE OF THE ART MUSEUM (Alex: | Clue: The Sun Valley Center for the Arts                 | Predicted: Sun-Maid                                           | Gold: idaho
+ 80. [✗] CAPITAL CITY CHURCHES (Alex: W | Clue: Matthias Church, or Matyas Templom, where Franz Jo | Predicted: Franz Liszt                                        | Gold: budapest
+ 99. [✗] NAME THE PARENT COMPANY        | Clue: Post-it notes                                      | Predicted: The Washington Post                                | Gold: 3m
+
+
+Insufficient Information/Too Little Keywords for BM25
+ 14. [✗] GOLDEN GLOBE WINNERS           | Clue: In 2009: Joker on film                             | Predicted: Joker (playing card)                               | Gold: heath ledger
+ 17. [✗] '80s NO.1 HITMAKERS            | Clue: 1988: "Father Figure"                              | Predicted: Father's Day                                       | Gold: george michael
+ 44. [✗] '80s NO.1 HITMAKERS            | Clue: 1983: "Beat It"                                    | Predicted: Blast beat                                         | Gold: michael jackson
+ 45. [✗] GOLDEN GLOBE WINNERS           | Clue: In 2009: Sookie Stackhouse                         | Predicted: True Blood                                         | Gold: anna paquin
+ 79. [✗] '80s NO.1 HITMAKERS            | Clue: 1988: "Man In The Mirror"                          | Predicted: Mirror Mirror (Dardanelles album)                  | Gold: michael jackson
+ 85. [✗] '80s NO.1 HITMAKERS            | Clue: 1989: "Miss You Much"                              | Predicted: Tiananmen Square protests of 1989                  | Gold: janet jackson
+ 87. [✗] NAME THE PARENT COMPANY        | Clue: Crest toothpaste                                   | Predicted: Crest (toothpaste)                                 | Gold: procter & gamble
+ 92. [✗] '80s NO.1 HITMAKERS            | Clue: 1980: "Rock With You"                              | Predicted: Punk rock                                          | Gold: michael jackson
+
+
+Correct Domain, Wrong Entity
+  2. [✗] OLD YEAR'S RESOLUTIONS         | Clue: The practice of pre-authorizing presidential use o | Predicted: History of the Republic of China                   | Gold: taiwan
+  4. [✗] BROADWAY LYRICS                | Clue: Song that says, "you make me smile with my heart;  | Predicted: Born This Way (song)                               | Gold: my funny valentine
+ 13. [✗] CEMETERIES                     | Clue: The mast from the USS Maine is part of the memoria | Predicted: USS Arizona Memorial                               | Gold: arlington national cemetery
+ 16. [✗] CONSERVATION                   | Clue: In 1980 China founded a center for these cute crea | Predicted: Chengdu                                            | Gold: panda
+ 24. [✗] CAMBODIAN HISTORY & CULTURE    | Clue: The Royal Palace grounds feature a statue of King  | Predicted: Napoleon III                                       | Gold: france
+ 25. [✗] HISTORICAL HODGEPODGE          | Clue: In the 400s B.C. this Chinese philosopher went int | Predicted: Roman Empire                                       | Gold: confucius
+ 27. [✗] HISTORICAL HODGEPODGE          | Clue: The Ammonites held sway in this Mideast country in | Predicted: Canaan                                             | Gold: jordan
+ 32. [✗] AFRICAN CITIES                 | Clue: The name of this largest Moroccan city combines 2  | Predicted: Marrakesh                                          | Gold: casablanca
+ 33. [✗] NAME THE PARENT COMPANY        | Clue: Jell-O                                             | Predicted: Jell-O                                             | Gold: kraft foods
+ 34. [✗] GOLDEN GLOBE WINNERS           | Clue: 2011: Chicago mayor Tom Kane                       | Predicted: Citizen Kane                                       | Gold: kelsey grammer
+ 37. [✗] NOTES FROM THE CAMPAIGN TRAIL  | Clue: In "The Deadlocked Election of 1800", James R. Sha | Predicted: Vice President of the United States                | Gold: aaron burr
+ 40. [✗] POETS & POETRY                 | Clue: She wrote, "My candle burns at both ends... but, a | Predicted: Maria Callas                                       | Gold: edna st. vincent millay
+ 42. [✗] NAME THE PARENT COMPANY        | Clue: Milton Bradley games                               | Predicted: Handheld game console                              | Gold: hasbro
+ 46. [✗] HISTORICAL HODGEPODGE          | Clue: This member of the Nixon & Ford cabinets was born  | Predicted: Richard Nixon                                      | Gold: henry kissinger
+ 49. [✗] NAME THE PARENT COMPANY        | Clue: Fisher-Price toys                                  | Predicted: Toy Town Museum                                    | Gold: mattel
+ 50. [✗] HISTORICAL QUOTES              | Clue: In a 1959 American kitchen exhibit in Moscow, he t | Predicted: Fidel Castro                                       | Gold: richard nixon
+ 57. [✗] GREEK FOOD & DRINK             | Clue: This clear Greek liqueur is quite potent, so it's  | Predicted: Cider                                              | Gold: ouzo
+ 58. [✗] OLD YEAR'S RESOLUTIONS         | Clue: Feb. 1, National Freedom Day, is the date in 1865  | Predicted: Confederate States of America                      | Gold: slavery
+ 62. [✗] POTPOURRI                      | Clue: Large specimens of this marsupial can leap over ba | Predicted: Fauna of Australia                                 | Gold: kangaroo
+ 63. [✗] GREEK FOOD & DRINK             | Clue: Because it's cured & stored in brine, this crumbly | Predicted: Sausage                                            | Gold: feta
+ 77. [✗] HE PLAYED A GUY NAMED JACK RYA | Clue: "Patriot Games"; he's had other iconic roles, in s | Predicted: Role-playing video game                            | Gold: harrison ford
+ 81. [✗] UCLA CELEBRITY ALUMNI          | Clue: Attending UCLA in the '60s, he was no "Meathead",  | Predicted: Kareem Abdul-Jabbar                                | Gold: rob reiner
+ 89. [✗] POETS & POETRY                 | Clue: In 1787 he signed his first published poem "Axiolo | Predicted: Lord Byron                                         | Gold: william wordsworth
+ 90. [✗] CAMBODIAN HISTORY & CULTURE    | Clue: Not to be confused with karma, krama is a popular  | Predicted: History of Cambodia                                | Gold: khmer language
+ 93. [✗] NOTES FROM THE CAMPAIGN TRAIL  | Clue: The Pulitzer-winning "The Making of the President  | Predicted: Hunter S. Thompson                                 | Gold: jfk
+
+
+Just Wrong Answers
+  8. [✗] UCLA CELEBRITY ALUMNI          | Clue: This woman who won consecutive heptathlons at the  | Predicted: University of Virginia                             | Gold: jackie joyner-kersee
+  9. [✗] SERVICE ORGANIZATIONS          | Clue: Originally this club's emblem was a wagon wheel; n | Predicted: Honda Accord                                       | Gold: rotary international
+ 18. [✗] AFRICAN-AMERICAN WOMEN         | Clue: In an essay defending this 2011 film, Myrlie Evers | Predicted: Citizen Kane                                       | Gold: the help
+ 20. [✗] CONSERVATION                   | Clue: Early projects of the WWF, this organization, incl | Predicted: Golden Eagle                                       | Gold: world wide fund
+ 21. [✗] CONSERVATION                   | Clue: Indonesia's largest lizard, it's protected from po | Predicted: List of Madagascar (franchise) characters          | Gold: komodo dragon
+ 22. [✗] 1920s NEWS FLASH!              | Clue: Nov. 28, 1929! This man & his chief pilot Bernt Ba | Predicted: 1929                                               | Gold: richard byrd
+ 23. [✗] CEMETERIES                     | Clue: On May 5, 1878 Alice Chambers was the last person  | Predicted: Doc Holliday                                       | Gold: boot hill
+ 26. [✗] AFRICAN-AMERICAN WOMEN         | Clue: Bessie Coleman, the first black woman licensed as  | Predicted: Bessie Coleman                                     | Gold: o'hare
+ 28. [✗] HE PLAYED A GUY NAMED JACK RYA | Clue: "The Sum of All Fears"; he also won a screenwritin | Predicted: Stanley Kubrick                                    | Gold: ben affleck
+ 29. [✗] POTPOURRI                      | Clue: One of the N.Y. Times' headlines on this landmark  | Predicted: Manhattan                                          | Gold: roe v. wade
+ 30. [✗] I'M BURNIN' FOR YOU            | Clue: France's Philip IV--known as "The Fair"--had Jacqu | Predicted: Philip IV of France                                | Gold: knights templar
+ 43. [✗] OLD YEAR'S RESOLUTIONS         | Clue: The Kentucky & Virginia resolutions were passed to | Predicted: Kentucky and Virginia Resolutions                  | Gold: the alien and sedition acts
+ 48. [✗] UCLA CELEBRITY ALUMNI          | Clue: For the brief time he attended, he was a rebel wit | Predicted: Zhou Enlai                                         | Gold: james dean
+ 51. [✗] POETS & POETRY                 | Clue: One of his "Tales of a Wayside Inn" begins, "Liste | Predicted: Paul Revere                                        | Gold: henry wadsworth longfellow
+ 55. [✗] THE QUOTABLE KEATS             | Clue: Keats was quoting this Edmund Spenser poem when he | Predicted: John Keats                                         | Gold: the faerie queene
+ 56. [✗] THE QUOTABLE KEATS             | Clue: In an 1819 letter Keats wrote that this lord & poe | Predicted: John Keats                                         | Gold: lord byron
+ 61. [✗] NEWSPAPERS                     | Clue: Early in their careers, Mark Twain & Bret Harte wr | Predicted: Bret Harte                                         | Gold: san francisco
+ 65. [✗] RANKS & TITLES                 | Clue: Italian for "leader", it was especially applied to | Predicted: History of Albania                                 | Gold: duce
+ 69. [✗] NEWSPAPERS                     | Clue: In 1840 Horace Greeley began publishing "The Log C | Predicted: Horace Greeley                                     | Gold: william henry harrison
+ 73. [✗] AFRICAN CITIES                 | Clue: Wooden 2-story verandas in this Liberian capital a | Predicted: Architecture of India                              | Gold: monrovia
+ 76. [✗] AFRICAN-AMERICAN WOMEN         | Clue: Rita Dove titled a collection of poems "On the Bus | Predicted: University of Virginia                             | Gold: rosa parks
+ 83. [✗] 1920s NEWS FLASH!              | Clue: News flash! This less-than-yappy pappy is sixth ve | Predicted: Characters of Parks and Recreation                 | Gold: calvin coolidge
+ 84. [✗] GOLDEN GLOBE WINNERS           | Clue: In 2001: The president of the United States on tel | Predicted: George W. Bush's first term as President of the Un | Gold: martin sheen
+ 94. [✗] SERVICE ORGANIZATIONS          | Clue: In 1843 Isaac Dittenhoefer became the first pres.  | Predicted: Roman Empire                                       | Gold: b'nai b'rith
+ 95. [✗] THE RESIDENTS                  | Clue: Don Knotts took over from Norman Fell as the resid | Predicted: Don Knotts                                         | Gold: three's company
+ 96. [✗] OLD YEAR'S RESOLUTIONS         | Clue: U.N. Res. 242 supports "secure and recognized boun | Predicted: Refugee                                            | Gold: the six day war
+ 97. [✗] UCLA CELEBRITY ALUMNI          | Clue: This blonde beauty who reprised her role as Amanda | Predicted: Melrose Place                                      | Gold: heather locklear
+100. [✗] GOLDEN GLOBE WINNERS           | Clue: In 2010: As Sherlock Holmes on film                | Predicted: Sherlock Holmes                                    | Gold: robert downey, jr.

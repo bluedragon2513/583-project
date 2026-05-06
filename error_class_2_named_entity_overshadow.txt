@@ -31,7 +31,7 @@ Q14  | GOLDEN GLOBE WINNERS
 
 Q26  | AFRICAN-AMERICAN WOMEN 
      | Clue: Bessie Coleman...landed a street named in her honor
-     |                          | at this Chicago airport
+     | at this Chicago airport
      | Gold: O'Hare           
      | Predicted: Bessie Coleman
      
@@ -39,7 +39,7 @@ Q26  | AFRICAN-AMERICAN WOMEN
 
 Q30  | I'M BURNIN' FOR YOU  
      | Clue: France's Philip IV had Jacques De Molay, last Grand
-     |                        | Master of this order, burned in 1314
+     | Master of this order, burned in 1314
      | Gold: Knights Templar 
      | Predicted: Philip IV of France
      
@@ -47,7 +47,7 @@ Q30  | I'M BURNIN' FOR YOU
 
 Q43  | OLD YEAR'S RESOLUTIONS 
      | Clue: The Kentucky & Virginia resolutions were passed to
-     |                          | protest these controversial 1798 acts of Congress
+     | protest these controversial 1798 acts of Congress
      | Gold: The Alien and Sedition Acts 
      | Predicted: Kentucky and Virginia Resolutions
      

@@ -6,139 +6,169 @@ CATEGORIES AFFECTED: most categories
 
 EXPLANATION:
 BM25 lands in the correct semantic neighborhood — the retrieved article is genuinely
-related to the clue topic — but picks the wrong specific entity. The clue contains
-enough vocabulary signal to find the right domain, but not enough to pin down the
-one specific answer among many plausible candidates.
+related to the clue — but selects the wrong specific entity. The clue vocabulary is
+strong enough to reach the right topic area but not specific enough to isolate the
+one correct answer.
 
-Two recurring sub-patterns:
+  Sub-type A — Most-famous entity in the domain:
+    BM25 returns the highest-scoring article for the topic but that article is a
+    different, more prominent entity than the one the clue specifies. Recurring
+    examples: Kareem Abdul-Jabbar for any UCLA alumni question, broad history
+    articles for any specific historical event, major cities for minor capitals.
 
-  Sub-type A — Most-famous entity in domain:
-    BM25 returns the highest-scoring article in the correct topical domain. That
-    article is a valid, related entity but not the one the clue specifies. Recurring
-    examples: Kareem Abdul-Jabbar appears for multiple UCLA alumni questions; History
-    of France / Napoleonic Wars / Roman Empire absorb broad historical clues.
+  Sub-type B — Thematically adjacent / wrong granularity:
+    BM25 finds an article in exactly the right subject area but at the wrong level
+    of specificity — the event instead of the person, the genre instead of the work,
+    the country instead of the city, the context instead of the answer.
 
-  Sub-type B — Thematically adjacent article:
-    The retrieved article covers the same topic as the answer but at the wrong
-    granularity (event instead of person, country instead of city, genre instead of
-    specific work). The discriminating detail in the clue (a year, a nickname, a
-    specific role) carries insufficient BM25 weight to separate the correct answer
-    from its thematic neighbors.
+Sub-type A: Most-Famous Entity in Domain:
 
-SELECT EXAMPLES (ordered by category):
+Q8   | Clue: This woman who won consecutive heptathlons at the Olympics went to UCLA
+     |       on a basketball scholarship
+     | Gold: Jackie Joyner-Kersee
+     | Predicted: University of Virginia
 
-AFRICAN CITIES:
-Q10  Cairo ✓  — "El Tahrir" + "Nile" + "capital" is specific enough. (Correct)
-Q32  Gold: Casablanca | Predicted: Marrakesh
-     Both large Moroccan cities. "Largest" + "combines 2 Spanish words" should
-     disambiguate, but Marrakesh is also prominent and well-indexed.
-Q54  Gold: Cape Town | Predicted: History of Africa
-     "Southernmost of South Africa's 3 capitals" is the decisive phrase but
-     "South Africa" pulls the broad history article to the top.
-Q73  Gold: Monrovia  | Predicted: Architecture of India
-     "Wooden verandas, Liberian capital, link to U.S. south" — "verandas" co-occurs
-     with colonial architecture globally; India article wins.
+     UCLA + Olympics retrieves university/athletics articles; UVA wins by BM25 weight
+     rather than the specific athlete.
 
-CEMETERIES:
-Q13  Gold: Arlington National Cemetery | Predicted: USS Arizona Memorial
-     "USS Maine mast, memorial, national cemetery" — USS Arizona article has
-     "USS" + "memorial" and outscores Arlington.
-Q23  Gold: Boot Hill | Predicted: Doc Holliday
-     "Dodge City, Kansas cemetery" — Doc Holliday (associated with Dodge City)
-     outscores the Boot Hill cemetery article itself.
+Q13  | Clue: The mast from the USS Maine is part of the memorial to the ship & crew
+     |       at this national cemetery
+     | Gold: Arlington National Cemetery
+     | Predicted: USS Arizona Memorial
 
-CONSERVATION / WILDLIFE:
-Q16  Gold: Panda       | Predicted: Chengdu
-     "China, bamboo, Wolong Nature Preserve, cute creatures" — Chengdu is near Wolong
-     and co-occurs with pandas frequently; the Panda article loses.
-Q20  Gold: World Wide Fund for Nature | Predicted: Golden Eagle
-     "Bald eagle + red wolf" — animal terms dominate. "WWF" as an acronym carries
-     weak BM25 weight.
-Q21  Gold: Komodo dragon | Predicted: List of Madagascar (franchise) characters
-     "Indonesia's largest lizard, protected from poachers" — no distinctive vocabulary
-     to separate Komodo dragon from other large-lizard or Indonesia articles.
+     "USS + memorial" matches the USS Arizona article, which outscores Arlington
+     despite describing a completely different memorial.
 
-GOLDEN GLOBE WINNERS:
-Q14  Gold: Heath Ledger  | Predicted: Joker (playing card)   [see also Class 2]
-Q34  Gold: Kelsey Grammer | Predicted: Citizen Kane
-     "2011: Chicago mayor Tom Kane" — "Kane" strongly matches Citizen Kane (film).
-     Kelsey Grammer played Tom Kane on the show Boss.
+Q22  | Clue: Nov. 28, 1929! This man & his chief pilot Bernt Balchen fly to South Pole!
+     |       You'll be an admirable admiral, sir!
+     | Gold: Richard Byrd
+     | Predicted: 1929
 
-HISTORICAL HODGEPODGE:
-Q15  Gold: Iberia (Iberian Peninsula) | Predicted: Napoleonic Wars
-     "Peninsula fought over in the Peninsular War 1808–1814" — the war article wins
-     over the geographic answer.
-Q25  Gold: Confucius | Predicted: Roman Empire
-     "Chinese philosopher, 400s B.C., exile" — "400s B.C." matches broad ancient
-     history; Roman Empire article dominates that temporal range in the index.
-Q27  Gold: Jordan | Predicted: Canaan
-     "Ammonites, Mideast, 1200s B.C., capital named for them" — Canaan is the
-     neighboring ancient territory; Jordan (Ammon → Amman) is not top-ranked.
+     "1929" is a strong BM25 term; the year article wins over the specific explorer.
 
-1920s NEWS FLASH!:
-Q22  Gold: Richard Byrd | Predicted: 1929
-     "Nov. 28, 1929, fly to South Pole, admirable admiral" — "1929" is a strong
-     BM25 term; the year article wins over the explorer.
-Q83  Gold: Calvin Coolidge | Predicted: Characters of Parks and Recreation
-     Cryptic phrasing ("less-than-yappy pappy, sixth veep to be top dog") produces
-     no BM25-retrievable signal; a completely off-domain article wins by noise.
+Q32  | Clue: The name of this largest Moroccan city combines 2 Spanish words
+     | Gold: Casablanca
+     | Predicted: Marrakesh
 
-NOTES FROM THE CAMPAIGN TRAIL:
-Q37  Gold: Aaron Burr  | Predicted: Vice President of the United States
-     "Deadlocked Election of 1800, dueling vice president" — generic VP article
-     outscores Aaron Burr's specific article.
-Q93  Gold: JFK         | Predicted: Hunter S. Thompson
-     "The Making of the President 1960, Pulitzer" — Thompson wrote campaign books
-     too (Fear and Loathing '72); BM25 conflates campaign-trail authors.
+     Both are large, well-indexed Moroccan cities. "Largest" should disambiguate
+     but Marrakesh scores comparably, and the Spanish-etymology clue carries too
+     little BM25 weight to separate them.
 
-OLD YEAR'S RESOLUTIONS:
-Q2   Gold: Taiwan      | Predicted: History of the Republic of China
-     "1955 resolution, island near mainland China" — Republic of China history
-     article outranks the Taiwan article.
-Q29  Gold: Roe v. Wade | Predicted: Manhattan
-     "NY Times, landmark 1973 Supreme Court decision, 'Cardinals shocked'" —
-     "N.Y." pulls a New York article; Roe v. Wade is not top-ranked.
-Q58  Gold: Slavery     | Predicted: Confederate States of America
-     "1865, amendment ending this" — Confederate States article scores above
-     Slavery despite the amendment being about ending slavery.
-Q96  Gold: The Six Day War | Predicted: Refugee
-     "U.N. Res. 242, secure boundaries, Israel, June 1967" — the refugee crisis
-     (a consequence of that war) outscores the war article itself.
+Q54  | Clue: This port is the southernmost of South Africa's 3 capitals
+     | Gold: Cape Town
+     | Predicted: History of Africa
 
-POETS & POETRY:
-Q40  Gold: Edna St. Vincent Millay | Predicted: Maria Callas
-     Famous "candle burns at both ends" quote — Millay's lyric has weak BM25
-     overlap with her article; Maria Callas (a famous female artist) wins by noise.
-Q89  Gold: William Wordsworth | Predicted: Lord Byron
-     "1787, first poem 'Axiologus', axio- Greek for 'worth'" — the wordplay
-     (axio = worth → Wordsworth) is invisible to BM25; Byron wins as a prominent
-     Romantic poet.
+     "South Africa + capitals" pulls the broad history article; "southernmost" is the
+     decisive detail but is rare vocabulary with weak BM25 signal.
 
-RANKS & TITLES:
-Q65  Gold: Duce | Predicted: History of Albania
-     "Italian for 'leader', applied to Mussolini" — Mussolini invaded Albania;
-     Albanian history article outscores the title "Duce".
+Q81  | Clue: Attending UCLA in the '60s, he was no "Meathead", he just played one
+     |       later on television
+     | Gold: Rob Reiner
+     | Predicted: Kareem Abdul-Jabbar
 
-SERVICE ORGANIZATIONS:
-Q9   Gold: Rotary International | Predicted: Honda Accord
-     "Club emblem was wagon wheel; now gearwheel with 24 cogs & 6 spokes" —
-     "gearwheel" and "spokes" match automotive/engineering articles; Honda Accord
-     wins by spurious overlap.
-Q94  Gold: B'nai B'rith | Predicted: Roman Empire
-     "Founded 1843, Jewish club, name means 'children of the covenant'" —
-     No recoverable signal links to Roman Empire; pure noise match.
+     Kareem Abdul-Jabbar is the most UCLA-indexed celebrity in the corpus; he appears
+     as the prediction for multiple different UCLA alumni questions regardless of clue.
 
-THAT 20-AUGHTS SHOW:
-Q53  NCIS ✓  — "JAG introduced this Mark Harmon drama" is specific enough;
-     "List of NCIS characters" contains "ncis" and matches.  (Correct)
+Q83  | Clue: This less-than-yappy pappy is sixth veep to be nation's top dog after
+     |       chief takes deep sleep!
+     | Gold: Calvin Coolidge
+     | Predicted: Characters of Parks and Recreation
 
-UCLA CELEBRITY ALUMNI:
-Q8   Gold: Jackie Joyner-Kersee | Predicted: University of Virginia
-     "Won consecutive heptathlons, UCLA on basketball scholarship" — University of
-     Virginia wins; the specific athlete is not retrieved.
-Q48  Gold: James Dean | Predicted: Zhou Enlai
-     "Briefly attended UCLA, rebel with a cause, 1950 stage production" — Zhou Enlai
-     (a Chinese leader) has no UCLA connection; completely spurious BM25 match.
-Q81  Gold: Rob Reiner | Predicted: Kareem Abdul-Jabbar
-     "UCLA in the '60s, no 'Meathead', played one on television" — Kareem Abdul-Jabbar
-     is the most UCLA-indexed celebrity; he appears for multiple alumni questions.
+     The cryptic 1920s-newsreel phrasing ("sixth veep, top dog, deep sleep") provides
+     no clean BM25 signal; the system returns a completely off-domain article by noise.
+
+Sub-type B: Thematically Adjacent / Wrong Granularity:
+
+Q2   | Clue: The practice of pre-authorizing presidential use of force dates to a 1955
+     |       resolution re: this island near mainland China
+     | Gold: Taiwan
+     | Predicted: History of the Republic of China
+
+     "1955 resolution, island near mainland China" retrieves the Republic of China
+     history article rather than the island nation (Taiwan) the resolution concerned.
+
+Q15  | Clue: It was the peninsula fought over in the peninsular war of 1808 to 1814
+     | Gold: Iberia (Iberian Peninsula)
+     | Predicted: Napoleonic Wars
+
+     The war article outscores the geographic answer; BM25 retrieves the event
+     rather than the peninsula that was the theatre of that event.
+
+Q16  | Clue: In 1980 China founded a center for these cute creatures in its
+     |       bamboo-rich Wolong Nature Preserve
+     | Gold: Panda
+     | Predicted: Chengdu
+
+     Chengdu is near Wolong and frequently co-occurs with pandas in the index;
+     BM25 retrieves the city rather than the animal being conserved.
+
+Q23  | Clue: On May 5, 1878 Alice Chambers was the last person buried in this
+     |       Dodge City, Kansas cemetery
+     | Gold: Boot Hill
+     | Predicted: Doc Holliday
+
+     "Dodge City, Kansas" strongly co-occurs with Doc Holliday; his article wins
+     over the Boot Hill cemetery article despite the clue asking for the place.
+
+Q29  | Clue: One of the N.Y. Times' headlines on this landmark 1973 Supreme Court
+     |       decision was "Cardinals shocked"
+     | Gold: Roe v. Wade
+     | Predicted: Manhattan
+
+     "N.Y. Times + 1973 + Supreme Court" should converge on Roe v. Wade, but
+     "N.Y." pulls a New York entity to the top instead.
+
+Q40  | Clue: She wrote, "My candle burns at both ends... but, ah, my foes, and oh,
+     |       my friends--it gives a lovely light"
+     | Gold: Edna St. Vincent Millay
+     | Predicted: Maria Callas
+
+     The lyric has weak overlap with Millay's article title; BM25 finds no strong
+     candidate and returns a prominent female cultural figure by noise.
+
+Q57  | Clue: This clear Greek liqueur is quite potent, so it's usually mixed with
+     |       water, which turns it white & cloudy
+     | Gold: Ouzo
+     | Predicted: Cider
+
+     "Clear + mixed with water + turns cloudy" describes Ouzo precisely, but BM25
+     matches "cloudy + drink" to Cider; Ouzo may not rank highly on these terms.
+
+Q58  | Clue: Feb. 1, National Freedom Day, is the date in 1865 when a resolution sent
+     |       the states an amendment ending this
+     | Gold: Slavery
+     | Predicted: Confederate States of America
+
+     "1865 + amendment" pulls the Civil War domain; Confederate States is the
+     most prominent Civil War article and outscores Slavery itself.
+
+Q62  | Clue: Large specimens of this marsupial can leap over barriers 6 feet high
+     | Gold: Kangaroo
+     | Predicted: Fauna of Australia
+
+     "Marsupial" retrieves the broader Fauna of Australia article above the specific
+     Kangaroo article; BM25 favours the encyclopedic category over the instance.
+
+Q65  | Clue: Italian for "leader", it was especially applied to Benito Mussolini
+     | Gold: Duce
+     | Predicted: History of Albania
+
+     Mussolini invaded Albania in 1939; the Albanian history article co-occurs with
+     his name and wins over the Italian title "Duce" that the clue is asking for.
+
+Q93  | Clue: The Pulitzer-winning "The Making of the President 1960" covered this
+     |       man's successful presidential campaign
+     | Gold: JFK
+     | Predicted: Hunter S. Thompson
+
+     Hunter S. Thompson is associated with campaign-trail journalism (Fear and Loathing
+     '72); BM25 conflates campaign-trail authors. JFK — the subject of the book —
+     is not top-ranked because he did not write it.
+
+Q96  | Clue: U.N. Res. 242 supports "secure and recognized boundaries" for Israel &
+     |       neighbors following this June 1967 war
+     | Gold: The Six Day War
+     | Predicted: Refugee
+
+     "Israel + 1967 + boundaries" retrieves the Palestinian refugee situation (a
+     consequence of the war) rather than the war itself.

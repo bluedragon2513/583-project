@@ -36,79 +36,121 @@ because the system has no way to follow the intended indirect mapping.
 '80s NO.1 HITMAKERS:
 
 Q17  | Clue: 1988: "Father Figure"
-     | Gold: George Michael   | Predicted: Father's Day
-     | "Father Figure" matches Father's Day article; George Michael not retrieved.
+     | Gold: George Michael   
+     | Predicted: Father's Day
+     
+     "Father Figure" matches Father's Day article; George Michael not retrieved.
 
 Q44  | Clue: 1983: "Beat It"
-     | Gold: Michael Jackson  | Predicted: Blast beat
-     | "Beat" + music context retrieves a drum technique article.
+     | Gold: Michael Jackson  
+     | Predicted: Blast beat
+     
+     "Beat" + music context retrieves a drum technique article.
 
 Q79  | Clue: 1988: "Man In The Mirror"
-     | Gold: Michael Jackson  | Predicted: Mirror Mirror (Dardanelles album)
-     | "Mirror" is the dominant BM25 term; an obscure album title wins.
+     | Gold: Michael Jackson  
+     | Predicted: Mirror Mirror (Dardanelles album)
+     
+     "Mirror" is the dominant BM25 term; an obscure album title wins.
 
 Q85  | Clue: 1989: "Miss You Much"
-     | Gold: Janet Jackson    | Predicted: Tiananmen Square protests of 1989
-     | "1989" is a strong term; Tiananmen is the dominant 1989 article in the index.
+     | Gold: Janet Jackson    
+     | Predicted: Tiananmen Square protests of 1989
+     
+     "1989" is a strong term; Tiananmen is the dominant 1989 article in the index.
 
 Q92  | Clue: 1980: "Rock With You"
-     | Gold: Michael Jackson  | Predicted: Punk rock
-     | "Rock" is the dominant term; the genre article wins.
+     | Gold: Michael Jackson  
+     | Predicted: Punk rock
+     
+     "Rock" is the dominant term; the genre article wins.
 
 "TIN" MEN:
 
 Q7   | Clue: This Italian painter depicted the "Adoration of the Golden Calf"
-     | Gold: Tintoretto       | Predicted: Golden Eagle
-     | "Golden Calf" → "golden" → Golden Eagle article. Tintoretto's name is the puzzle.
+     | Gold: Tintoretto       
+     | Predicted: Golden Eagle
+     
+     "Golden Calf" → "golden" → Golden Eagle article. Tintoretto's name is the puzzle.
 
 Q38  | Clue: He served in the KGB before becoming president & then prime minister of Russia
-     | Gold: Vladimir Putin   | Predicted: Politics of Russia
-     | "KGB, president, Russia" retrieves the broad Politics of Russia article over Putin.
+     | Gold: Vladimir Putin   
+     | Predicted: Politics of Russia
+     
+     "KGB, president, Russia" retrieves the broad Politics of Russia article over Putin.
 
 Q60  | Clue: He earned the "fifth Beatle" nickname by producing all of the Beatles' albums
-     | Gold: George Martin    | Predicted: Fifth Beatle
-     | "Fifth Beatle" is a Wikipedia disambiguation page; BM25 matches it exactly.
-     | George marTIN is the answer, but the "TIN" constraint is invisible to BM25.
+     | Gold: George Martin    
+     | Predicted: Fifth Beatle
+     
+     "Fifth Beatle" is a Wikipedia disambiguation page; BM25 matches it exactly.
+     George marTIN is the answer, but the "TIN" constraint is invisible to BM25.
 
 Q68  | Clue: You can't mention this shortstop without mentioning Evers & Chance
-     | Gold: Joe Tinker       | Predicted: Jean Chrétien
-     | "Tinker, Evers, and Chance" should retrieve Joe Tinker. Instead BM25 returns
-     | Jean Chrétien (a Canadian politician with no baseball connection whatsoever) —
-     | a completely spurious match showing BM25's failure to handle this category.
+     | Gold: Joe Tinker       
+     | Predicted: Jean Chrétien
+     
+     "Tinker, Evers, and Chance" should retrieve Joe Tinker. Instead BM25 returns
+     Jean Chrétien (a Canadian politician with no baseball connection whatsoever) —
+     a completely spurious match showing BM25's failure to handle this category.
 
 NAME THE PARENT COMPANY:
 
-Q33  | Clue: Jell-O             | Gold: Kraft Foods       | Predicted: Jell-O
-     | Product article has perfect overlap; Kraft Foods is one brand among many.
+Q33  | Clue: Jell-O             
+     | Gold: Kraft Foods       
+     | Predicted: Jell-O
+     
+     Product article has perfect overlap; Kraft Foods is one brand among many.
 
-Q42  | Clue: Milton Bradley games | Gold: Hasbro           | Predicted: Handheld game console
-     | "Games" matches gaming hardware articles; Hasbro not in top-10.
+Q42  | Clue: Milton Bradley games 
+     | Gold: Hasbro           
+     | Predicted: Handheld game console
+     
+     "Games" matches gaming hardware articles; Hasbro not in top-10.
 
-Q49  | Clue: Fisher-Price toys  | Gold: Mattel            | Predicted: Toy Town Museum
-     | "Fisher-Price + toys" matches toy-related articles; Mattel not retrieved.
+Q49  | Clue: Fisher-Price toys  
+     | Gold: Mattel            
+     | Predicted: Toy Town Museum
+     
+     "Fisher-Price + toys" matches toy-related articles; Mattel not retrieved.
 
-Q87  | Clue: Crest toothpaste   | Gold: Procter & Gamble  | Predicted: Crest (toothpaste)
-     | Product article ranks #1; P&G is a conglomerate with diluted overlap.
+Q87  | Clue: Crest toothpaste   
+     | Gold: Procter & Gamble  
+     | Predicted: Crest (toothpaste)
+     
+     Product article ranks #1; P&G is a conglomerate with diluted overlap.
 
-Q99  | Clue: Post-it notes      | Gold: 3M                | Predicted: The Washington Post
-     | "Post" matches The Washington Post; 3M barely mentions "Post-it" relative to its
-     | article length.
+Q99  | Clue: Post-it notes      
+     | Gold: 3M                
+     | Predicted: The Washington Post
+     
+     "Post" matches The Washington Post; 3M barely mentions "Post-it" relative to its
+     article length.
 
 HISTORICAL QUOTES:
 
 Q11  | Clue: After the fall of France in 1940, this general told his country,
      |       "France has lost a battle. But France has not lost the war"
-     | Gold: Charles de Gaulle | Predicted: History of France
-     | "Fall of France 1940" → History of France article outscores de Gaulle's.
+     
+     | Gold: Charles de Gaulle 
+     | Predicted: History of France
+     
+     "Fall of France 1940" → History of France article outscores de Gaulle's.
 
 Q50  | Clue: In a 1959 American kitchen exhibit in Moscow, he told Khrushchev,
      |       "In America, we like to make life easier for women"
-     | Gold: Richard Nixon     | Predicted: Fidel Castro
-     | "Moscow + Khrushchev + 1959" → Cold War figures. Castro also prominent in 1959;
-     | Nixon (the Kitchen Debate speaker) not top-ranked.
+     
+     | Gold: Richard Nixon     
+     | Predicted: Fidel Castro
+     
+     "Moscow + Khrushchev + 1959" → Cold War figures. Castro also prominent in 1959;
+     Nixon (the Kitchen Debate speaker) not top-ranked.
 
 Q88  | Clue: In 1888 this Chancellor told the Reichstag,
      |       "we Germans fear God, but nothing else in the world"
-     | Gold: Otto von Bismarck | Predicted: Wilhelm II, German Emperor
-     | "Reichstag + 1888" → multiple German political articles. Wilhelm II (also
-     | associated with that era) wins over Bismarck.
+     
+     | Gold: Otto von Bismarck 
+     | Predicted: Wilhelm II, German Emperor
+     
+     "Reichstag + 1888" → multiple German political articles. Wilhelm II (also
+     associated with that era) wins over Bismarck.

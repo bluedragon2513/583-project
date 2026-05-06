@@ -1,94 +1,97 @@
-ERROR CLASS 1: Meta-Category Answer Type Mismatch
-==================================================
+ERROR CLASS 1: Meta-Category Answer Domain Mismatch
+=====================================================
+
+QUESTIONS IN CLASS: 10
+CATEGORIES AFFECTED: STATE OF THE ART MUSEUM, CAPITAL CITY CHURCHES, COMPLETE DOM-INATION
 
 EXPLANATION:
-These categories embed a game rule inside their name (usually in a parenthetical
-"Alex: ..." note) that redefines what the answer should be. The clue points to one
-domain (a museum, a church) but the correct answer belongs to a different domain
-entirely (a U.S. state, a capital city). BM25 retrieves documents from the domain
-named in the clue, so the correct answer article is almost certainly absent from the
-top-10 candidate list. LLM reranking cannot rescue a candidate that was never
-retrieved. The fix requires a query rewrite that targets the *answer* domain — e.g.,
-for STATE OF THE ART MUSEUM, searching Wikipedia's list of state articles for the
-one that contains the museum name, rather than searching for the museum itself.
+Some categories embed a game rule that completely redirects the answer domain. BM25
+retrieves documents similar to the clue text, but the correct answer belongs to a
+*different* domain that the clue never mentions. No amount of query tuning can fix
+this class — the right article is simply not in the top-10 candidates.
 
-QUESTIONS IN THIS CLASS (10):
+  - STATE OF THE ART MUSEUM: "We'll give you the museum. You give us the state."
+    BM25 retrieves museum articles; U.S. state articles never appear.
+  - CAPITAL CITY CHURCHES: "We'll give you the church. You tell us the capital city."
+    BM25 retrieves church/figure articles; the capital city article is absent.
+  - COMPLETE DOM-INATION: Every answer must contain the substring "dome."
+    BM25 has no substring filter; it retrieves topically relevant articles regardless
+    of whether "dome" appears in their title.
 
---- STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.) ---
+The fix requires a pre-retrieval rewrite: for museum→state, search which state's
+Wikipedia article mentions the named museum; for church→city, look up the church
+article and extract its location metadata; for the dome constraint, apply a title
+substring filter after retrieval.
 
-Q6
-  Category : STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.)
-  Clue     : The Naples Museum of Art
-  Gold     : Florida
-  Predicted: Metropolitan Museum of Art
-  Note     : BM25 finds museum articles; Florida is never in the candidate list.
+EXAMPLES:
 
-Q12
-  Category : STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.)
-  Clue     : The Taft Museum of Art
-  Gold     : Ohio
-  Predicted: Metropolitan Museum of Art
-  Note     : Same failure mode. Ohio is not retrieved for a query about an art museum.
+Q6   | STATE OF THE ART MUSEUM 
+     | Clue: The Naples Museum of Art
+     | Gold: Florida            
+     | Predicted: Metropolitan Museum of Art
 
-Q31
-  Category : STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.)
-  Clue     : The Georgia O'Keeffe Museum
-  Gold     : New Mexico
-  Predicted: Metropolitan Museum of Art
-  Note     : "Georgia" in the name may attract wrong geography; correct answer is New Mexico.
+     BM25 finds museum articles. Florida is never a candidate.
 
-Q66
-  Category : STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.)
-  Clue     : The Kalamazoo Institute of Arts
-  Gold     : Michigan
-  Predicted: Metropolitan Museum of Art
-  Note     : BM25 finds the most prominent art-museum article regardless of clue.
+Q12  | STATE OF THE ART MUSEUM 
+     | Clue: The Taft Museum of Art
+     | Gold: Ohio               
+     | Predicted: William Howard Taft
+     
+     BM25 matches "Taft" to the president's article; Ohio is not retrieved.
 
-Q67
-  Category : STATE OF THE ART MUSEUM (Alex: We'll give you the museum. You give us the state.)
-  Clue     : The Sun Valley Center for the Arts
-  Gold     : Idaho
-  Predicted: Metropolitan Museum of Art
-  Note     : Metropolitan Museum of Art is the top-ranked museum article for every
-             question in this category, making it the perpetual wrong prediction.
+Q31  | STATE OF THE ART MUSEUM 
+     | Clue: The Georgia O'Keeffe Museum
+     | Gold: New Mexico         
+     | Predicted: Alfred Stieglitz
+     
+     BM25 finds O'Keeffe's associate Stieglitz; New Mexico is not a candidate.
 
---- CAPITAL CITY CHURCHES (Alex: We'll give you the church. You tell us the capital city.) ---
+Q66  | STATE OF THE ART MUSEUM 
+     | Clue: The Kalamazoo Institute of Arts
+     | Gold: Michigan           
+     | Predicted: Kalamazoo/Battle Creek International Airport
+     
+     "Kalamazoo" matches the airport article; Michigan is not retrieved.
 
-Q41
-  Category : CAPITAL CITY CHURCHES (Alex: We'll give you the church. You tell us the capital city in which it is located.)
-  Clue     : In this Finnish city, the Lutheran Cathedral, also known as Tuomiokirkko
-  Gold     : Helsinki
-  Predicted: St Paul's Cathedral
-  Note     : BM25 retrieves a prominent cathedral article; Helsinki is not in candidates.
+Q67  | STATE OF THE ART MUSEUM 
+     | Clue: The Sun Valley Center for the Arts
+     | Gold: Idaho              
+     | Predicted: Sun-Maid
+     
+     "Sun Valley" matches the Sun-Maid raisin brand; Idaho never appears.
 
-Q47
-  Category : CAPITAL CITY CHURCHES (Alex: We'll give you the church. You tell us the capital city in which it is located.)
-  Clue     : The High Kirk of St. Giles, where John Knox was minister
-  Gold     : Edinburgh
-  Predicted: John Knox
-  Note     : John Knox is mentioned in the clue itself; Edinburgh is not retrieved.
+Q41  | CAPITAL CITY CHURCHES   
+     | Clue: Lutheran Cathedral (Tuomiokirkko) in this Finnish city
+     | Gold: Helsinki           
+     | Predicted: Finnish Orthodox Church
+     
+     BM25 retrieves Finnish church articles; Helsinki is not a candidate.
 
-Q80
-  Category : CAPITAL CITY CHURCHES (Alex: We'll give you the church. You tell us the capital city in which it is located.)
-  Clue     : Matthias Church, or Matyas Templom, where Franz Joseph was crowned in 1867
-  Gold     : Budapest
-  Predicted: Votive Church, Vienna
-  Note     : BM25 matches "crowned" and "Franz Joseph" to Vienna-related articles.
+Q47  | CAPITAL CITY CHURCHES   
+     | Clue: The High Kirk of St. Giles, where John Knox was minister
+     | Gold: Edinburgh          
+     | Predicted: John Knox
+     
+     John Knox is named in the clue; his article wins over Edinburgh.
 
---- COMPLETE DOM-INATION (Alex: Not "domination." All correct responses contain "dome".) ---
+Q80  | CAPITAL CITY CHURCHES   
+     | Clue: Matthias Church, where Franz Joseph was crowned in 1867
+     | Gold: Budapest           
+     | Predicted: Franz Liszt
+     
+     "Franz Joseph 1867" retrieves Austro-Hungarian figures; Budapest is absent.
 
-Q71
-  Category : COMPLETE DOM-INATION(Alex: Not "domination.")
-  Clue     : This Wisconsin city claims to have built the USA's only granite dome
-  Gold     : Madison
-  Predicted: Temple Mount
-  Note     : The clue contains "dome" prominently; BM25 finds dome-related articles
-             but not the Wisconsin city article. Madison has a weak BM25 signal.
+Q74  | COMPLETE DOM-INATION    
+     | Clue: This New Orleans venue reopened Sept. 25, 2006
+     | Gold: Mercedes-Benz Superdome 
+     | Predicted: Louis Armstrong New Orleans Int'l Airport
+     
+     Both are large New Orleans landmarks; BM25 cannot enforce the "dome" constraint.
 
-Q78
-  Category : COMPLETE DOM-INATION(Alex: Not "domination.")
-  Clue     : This sacred structure dates from the late 600's A.D.
-  Gold     : Dome of the Rock
-  Predicted: History of Armenia
-  Note     : "Sacred structure" and "late 600s A.D." match broad historical articles.
-             Dome of the Rock should be findable but scored below the noise threshold.
+Q78  | COMPLETE DOM-INATION    
+     | Clue: This sacred structure dates from the late 600's A.D.
+     | Gold: Dome of the Rock  
+     | Predicted: Roman Empire
+     
+     "Sacred structure, late 600s A.D." is too generic; Dome of the Rock requires
+     the category hint but no candidate title contains "dome."

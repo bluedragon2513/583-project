@@ -1,0 +1,144 @@
+ERROR CLASS 4: Right Domain, Wrong Specific Entity
+===================================================
+
+QUESTIONS IN CLASS: ~38 (largest class)
+CATEGORIES AFFECTED: most categories
+
+EXPLANATION:
+BM25 lands in the correct semantic neighborhood — the retrieved article is genuinely
+related to the clue topic — but picks the wrong specific entity. The clue contains
+enough vocabulary signal to find the right domain, but not enough to pin down the
+one specific answer among many plausible candidates.
+
+Two recurring sub-patterns:
+
+  Sub-type A — Most-famous entity in domain:
+    BM25 returns the highest-scoring article in the correct topical domain. That
+    article is a valid, related entity but not the one the clue specifies. Recurring
+    examples: Kareem Abdul-Jabbar appears for multiple UCLA alumni questions; History
+    of France / Napoleonic Wars / Roman Empire absorb broad historical clues.
+
+  Sub-type B — Thematically adjacent article:
+    The retrieved article covers the same topic as the answer but at the wrong
+    granularity (event instead of person, country instead of city, genre instead of
+    specific work). The discriminating detail in the clue (a year, a nickname, a
+    specific role) carries insufficient BM25 weight to separate the correct answer
+    from its thematic neighbors.
+
+SELECT EXAMPLES (ordered by category):
+
+AFRICAN CITIES:
+Q10  Cairo ✓  — "El Tahrir" + "Nile" + "capital" is specific enough. (Correct)
+Q32  Gold: Casablanca | Predicted: Marrakesh
+     Both large Moroccan cities. "Largest" + "combines 2 Spanish words" should
+     disambiguate, but Marrakesh is also prominent and well-indexed.
+Q54  Gold: Cape Town | Predicted: History of Africa
+     "Southernmost of South Africa's 3 capitals" is the decisive phrase but
+     "South Africa" pulls the broad history article to the top.
+Q73  Gold: Monrovia  | Predicted: Architecture of India
+     "Wooden verandas, Liberian capital, link to U.S. south" — "verandas" co-occurs
+     with colonial architecture globally; India article wins.
+
+CEMETERIES:
+Q13  Gold: Arlington National Cemetery | Predicted: USS Arizona Memorial
+     "USS Maine mast, memorial, national cemetery" — USS Arizona article has
+     "USS" + "memorial" and outscores Arlington.
+Q23  Gold: Boot Hill | Predicted: Doc Holliday
+     "Dodge City, Kansas cemetery" — Doc Holliday (associated with Dodge City)
+     outscores the Boot Hill cemetery article itself.
+
+CONSERVATION / WILDLIFE:
+Q16  Gold: Panda       | Predicted: Chengdu
+     "China, bamboo, Wolong Nature Preserve, cute creatures" — Chengdu is near Wolong
+     and co-occurs with pandas frequently; the Panda article loses.
+Q20  Gold: World Wide Fund for Nature | Predicted: Golden Eagle
+     "Bald eagle + red wolf" — animal terms dominate. "WWF" as an acronym carries
+     weak BM25 weight.
+Q21  Gold: Komodo dragon | Predicted: List of Madagascar (franchise) characters
+     "Indonesia's largest lizard, protected from poachers" — no distinctive vocabulary
+     to separate Komodo dragon from other large-lizard or Indonesia articles.
+
+GOLDEN GLOBE WINNERS:
+Q14  Gold: Heath Ledger  | Predicted: Joker (playing card)   [see also Class 2]
+Q34  Gold: Kelsey Grammer | Predicted: Citizen Kane
+     "2011: Chicago mayor Tom Kane" — "Kane" strongly matches Citizen Kane (film).
+     Kelsey Grammer played Tom Kane on the show Boss.
+
+HISTORICAL HODGEPODGE:
+Q15  Gold: Iberia (Iberian Peninsula) | Predicted: Napoleonic Wars
+     "Peninsula fought over in the Peninsular War 1808–1814" — the war article wins
+     over the geographic answer.
+Q25  Gold: Confucius | Predicted: Roman Empire
+     "Chinese philosopher, 400s B.C., exile" — "400s B.C." matches broad ancient
+     history; Roman Empire article dominates that temporal range in the index.
+Q27  Gold: Jordan | Predicted: Canaan
+     "Ammonites, Mideast, 1200s B.C., capital named for them" — Canaan is the
+     neighboring ancient territory; Jordan (Ammon → Amman) is not top-ranked.
+
+1920s NEWS FLASH!:
+Q22  Gold: Richard Byrd | Predicted: 1929
+     "Nov. 28, 1929, fly to South Pole, admirable admiral" — "1929" is a strong
+     BM25 term; the year article wins over the explorer.
+Q83  Gold: Calvin Coolidge | Predicted: Characters of Parks and Recreation
+     Cryptic phrasing ("less-than-yappy pappy, sixth veep to be top dog") produces
+     no BM25-retrievable signal; a completely off-domain article wins by noise.
+
+NOTES FROM THE CAMPAIGN TRAIL:
+Q37  Gold: Aaron Burr  | Predicted: Vice President of the United States
+     "Deadlocked Election of 1800, dueling vice president" — generic VP article
+     outscores Aaron Burr's specific article.
+Q93  Gold: JFK         | Predicted: Hunter S. Thompson
+     "The Making of the President 1960, Pulitzer" — Thompson wrote campaign books
+     too (Fear and Loathing '72); BM25 conflates campaign-trail authors.
+
+OLD YEAR'S RESOLUTIONS:
+Q2   Gold: Taiwan      | Predicted: History of the Republic of China
+     "1955 resolution, island near mainland China" — Republic of China history
+     article outranks the Taiwan article.
+Q29  Gold: Roe v. Wade | Predicted: Manhattan
+     "NY Times, landmark 1973 Supreme Court decision, 'Cardinals shocked'" —
+     "N.Y." pulls a New York article; Roe v. Wade is not top-ranked.
+Q58  Gold: Slavery     | Predicted: Confederate States of America
+     "1865, amendment ending this" — Confederate States article scores above
+     Slavery despite the amendment being about ending slavery.
+Q96  Gold: The Six Day War | Predicted: Refugee
+     "U.N. Res. 242, secure boundaries, Israel, June 1967" — the refugee crisis
+     (a consequence of that war) outscores the war article itself.
+
+POETS & POETRY:
+Q40  Gold: Edna St. Vincent Millay | Predicted: Maria Callas
+     Famous "candle burns at both ends" quote — Millay's lyric has weak BM25
+     overlap with her article; Maria Callas (a famous female artist) wins by noise.
+Q89  Gold: William Wordsworth | Predicted: Lord Byron
+     "1787, first poem 'Axiologus', axio- Greek for 'worth'" — the wordplay
+     (axio = worth → Wordsworth) is invisible to BM25; Byron wins as a prominent
+     Romantic poet.
+
+RANKS & TITLES:
+Q65  Gold: Duce | Predicted: History of Albania
+     "Italian for 'leader', applied to Mussolini" — Mussolini invaded Albania;
+     Albanian history article outscores the title "Duce".
+
+SERVICE ORGANIZATIONS:
+Q9   Gold: Rotary International | Predicted: Honda Accord
+     "Club emblem was wagon wheel; now gearwheel with 24 cogs & 6 spokes" —
+     "gearwheel" and "spokes" match automotive/engineering articles; Honda Accord
+     wins by spurious overlap.
+Q94  Gold: B'nai B'rith | Predicted: Roman Empire
+     "Founded 1843, Jewish club, name means 'children of the covenant'" —
+     No recoverable signal links to Roman Empire; pure noise match.
+
+THAT 20-AUGHTS SHOW:
+Q53  NCIS ✓  — "JAG introduced this Mark Harmon drama" is specific enough;
+     "List of NCIS characters" contains "ncis" and matches.  (Correct)
+
+UCLA CELEBRITY ALUMNI:
+Q8   Gold: Jackie Joyner-Kersee | Predicted: University of Virginia
+     "Won consecutive heptathlons, UCLA on basketball scholarship" — University of
+     Virginia wins; the specific athlete is not retrieved.
+Q48  Gold: James Dean | Predicted: Zhou Enlai
+     "Briefly attended UCLA, rebel with a cause, 1950 stage production" — Zhou Enlai
+     (a Chinese leader) has no UCLA connection; completely spurious BM25 match.
+Q81  Gold: Rob Reiner | Predicted: Kareem Abdul-Jabbar
+     "UCLA in the '60s, no 'Meathead', played one on television" — Kareem Abdul-Jabbar
+     is the most UCLA-indexed celebrity; he appears for multiple alumni questions.

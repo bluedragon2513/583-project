@@ -1,0 +1,150 @@
+ERROR CLASS 2: Named Entity in Clue Overshadows the Answer
+===========================================================
+
+QUESTIONS IN CLASS: 16
+CATEGORIES AFFECTED: POETS & POETRY, THE QUOTABLE KEATS, NEWSPAPERS, UCLA CELEBRITY
+  ALUMNI, GOLDEN GLOBE WINNERS, THE RESIDENTS, OLD YEAR'S RESOLUTIONS, NOTES FROM THE
+  CAMPAIGN TRAIL, I'M BURNIN' FOR YOU, AFRICAN-AMERICAN WOMEN, HISTORICAL HODGEPODGE
+
+EXPLANATION:
+Jeopardy clues routinely name a prominent person, work, or place *as context* while the
+actual answer is something associated with that entity. BM25 scores the named-in-clue
+entity highest because it has perfect vocabulary overlap with the query; the answer
+article scores lower because it mentions the context entity only incidentally.
+
+The answer is always "one hop" away from what BM25 retrieves:
+  clue names X, answer is something X wrote / appeared in / supported / was associated with.
+
+This is structurally unfixable by BM25 tuning alone. A solution requires the system to
+(a) detect that the clue's prominent named entity is context rather than the answer, and
+(b) use the named entity as a pivot to search for the associated article instead.
+
+EXAMPLES:
+
+Q14  | GOLDEN GLOBE WINNERS 
+     | Clue: In 2009: Joker on film
+     | Gold: Heath Ledger    
+     | Predicted: Joker (playing card)
+     | "Joker" dominates retrieval; the Joker (playing card) article outranks Ledger.
+     
+     The answer is the actor who played the role, not the character.
+
+Q26  | AFRICAN-AMERICAN WOMEN 
+     | Clue: Bessie Coleman...landed a street named in her honor
+     |                          | at this Chicago airport
+     | Gold: O'Hare           
+     | Predicted: Bessie Coleman
+     
+     Coleman is named in the clue; her article wins. The answer is the airport.
+
+Q30  | I'M BURNIN' FOR YOU  
+     | Clue: France's Philip IV had Jacques De Molay, last Grand
+     |                        | Master of this order, burned in 1314
+     | Gold: Knights Templar 
+     | Predicted: Philip IV of France
+     
+     Philip IV is the prominent named entity; the Templar order is one hop away.
+
+Q43  | OLD YEAR'S RESOLUTIONS 
+     | Clue: The Kentucky & Virginia resolutions were passed to
+     |                          | protest these controversial 1798 acts of Congress
+     | Gold: The Alien and Sedition Acts 
+     | Predicted: Kentucky and Virginia Resolutions
+     
+     The resolutions are named in the clue; BM25 returns their article.
+     The answer is the acts they were protesting.
+
+Q45  | GOLDEN GLOBE WINNERS 
+     | Clue: In 2009: Sookie Stackhouse
+     | Gold: Anna Paquin     
+     | Predicted: True Blood
+     
+     The character and show are the named entities; the actress (Anna Paquin) is the
+     Golden Globe winner one hop away.
+
+Q46  | HISTORICAL HODGEPODGE 
+     | Clue: This member of the Nixon & Ford cabinets was born
+     | in Furth, Germany in 1923
+     | Gold: Henry Kissinger  
+     | Predicted: Richard Nixon
+     
+     Nixon is the most prominent named entity; Kissinger is the cabinet member asked for.
+
+Q51  | POETS & POETRY 
+     | Clue: One of his "Tales of a Wayside Inn" begins, "...the
+     | midnight ride of Paul Revere"
+     | Gold: Henry Wadsworth Longfellow 
+     | Predicted: Paul Revere
+     
+     Paul Revere is the most prominent proper noun; Longfellow wrote the poem about him.
+
+Q55  | THE QUOTABLE KEATS 
+     | Clue: Keats was quoting this Edmund Spenser poem when he
+     | told Shelley to "'load every rift' of your subject with ore"
+     | Gold: The Faerie Queene 
+     | Predicted: John Keats
+     
+     "Keats" appears in the category name and clue; his article ranks above Spenser's poem.
+
+Q56  | THE QUOTABLE KEATS 
+     | Clue: In an 1819 letter Keats wrote that this lord & poet
+     | "cuts a figure, but he is not figurative"
+     | Gold: Lord Byron   
+     | Predicted: John Keats
+     
+     Same failure: "Keats" dominates. Byron is the subject of the letter.
+
+Q61  | NEWSPAPERS 
+     | Clue: Mark Twain & Bret Harte wrote pieces for this California
+     | city's Chronicle
+     | Gold: San Francisco 
+     | Predicted: Bret Harte
+     
+     Bret Harte is named; San Francisco (the city whose Chronicle they wrote for) loses.
+
+Q69  | NEWSPAPERS 
+     | Clue: In 1840 Horace Greeley began publishing "The Log Cabin"
+     | in support of this Whig candidate
+     | Gold: William Henry Harrison 
+     | Predicted: Horace Greeley
+     
+     Greeley is named; Harrison (the supported candidate) is one hop away.
+
+Q76  | AFRICAN-AMERICAN WOMEN 
+     | Clue: Rita Dove titled a collection of poems
+     | "On the Bus with" this woman
+     | Gold: Rosa Parks       
+     | Predicted: University of Virginia
+     
+     Rita Dove is a UVA professor; BM25 retrieves UVA instead of Rosa Parks.
+
+Q84  | GOLDEN GLOBE WINNERS 
+     | Clue: In 2001: The president of the United States on television
+     | Gold: Martin Sheen    
+     | Predicted: George W. Bush's first term as President
+     
+     "President of the United States 2001" retrieves the real president; Martin Sheen
+     played the fictional President Bartlet on The West Wing (Golden Globe 2001).
+
+Q95  | THE RESIDENTS 
+     | Clue: Don Knotts took over from Norman Fell as the resident
+     | landlord on this sitcom
+     | Gold: Three's Company 
+     | Predicted: Don Knotts
+     
+     Don Knotts is named; the sitcom (Three's Company) is the one-hop answer.
+
+Q97  | UCLA CELEBRITY ALUMNI 
+     | Clue: This blonde beauty who reprised her role as Amanda
+     | on the new "Melrose Place" was a psychology major
+     | Gold: Heather Locklear 
+     | Predicted: Melrose Place
+     
+     "Melrose Place" is the dominant named entity; Heather Locklear is one hop away.
+
+Q100 | GOLDEN GLOBE WINNERS 
+     | Clue: In 2010: As Sherlock Holmes on film
+     | Gold: Robert Downey, Jr. 
+     | Predicted: Sherlock Holmes
+     
+     The character Sherlock Holmes is named; the actor who won the award is the answer.

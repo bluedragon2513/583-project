@@ -24,7 +24,7 @@ from org.apache.lucene.analysis.en import EnglishAnalyzer
 from org.apache.lucene.queryparser.classic import QueryParser
 
 INDEX_DIR = "wiki_index"
-QUESTIONS_FILE = os.path.join("project description folder", "questions.txt")
+QUESTIONS_FILE = os.path.join("project_description_folder", "questions.txt")
 TOP_K = 10  # retrieve top-K docs per question
 
 
